@@ -2,11 +2,7 @@ import { useEffect, useState } from "react"
 import Bloglist from "./Bloglist";
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([
-        { title: 'My project', body: 'lorem ipsum...', author: 'ed', id: 1 },
-        { title: 'My book collection', body: 'lorem ipsum...', author: 'baste', id: 2 },
-        { title: 'What I learned', body: 'lorem ipsum...', author: 'ed', id: 3 }
-    ]);
+    const [blogs, setBlogs] = useState(null);
 
     const [name, setName] = useState('ed');
 
@@ -16,15 +12,17 @@ const Home = () => {
     }
 
     useEffect(() => {
-        console.log('use effect ran');
-        console.log(name);
-    }, [name]);
+        fetch('http://localhost:8000/blogs')
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setBlogs(data);
+            })
+    }, []);
 
     return (
         <div className="home">
-            <Bloglist blogs={blogs} title="All Blogs" handleDelete={handleDelete} />
-            <button onClick={() => setName('makoy')}>change name</button>
-            <p>{ name }</p>
+            {blogs && <Bloglist blogs={blogs} />}
         </div>
     )
 }   
